@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Homepage </title>
+	<style>
+		* {
+			font-size: 1em;
+			font-family: serif;
+		}
+		body {
+			margin: 0;
+			background-color: whitesmoke;
+		}
+		a { text-decoration: none; }
+		/*   SWITCHING NAV BAR   */
+		.nav {
+			display: flex;
+			margin-bottom: 2em;
+		}
+		.link {
+			flex: .5;
+			color: blue;
+			padding: .5em;
+			cursor: pointer;
+			font-size: 1.5em;
+			font-weight: 900;
+			text-align: center;
+			background-color: lightgray;
+			box-shadow: inset 0 0 .1em gray;
+		}
+		.active {
+			color: white !important;
+			background-color: blue !important;
+		}
+		/*   FORM STYLING   */
+		.heading {
+			margin: 0;
+			color: blue;
+			font-size: 1.5em;
+			padding: .5em 1em;
+			border-bottom: 1px solid blue;
+		}
+		.wrapper {
+			margin: 0;
+			padding: 1em;
+			list-style-type: none;
+		}
+		.sections {
+			padding: .5em;
+			display: flex;
+		}
+		.sections > label,
+		.sections > input { flex: .25; }
+		.sections > label { padding: .5em 1.5em .5em 0; }
+		.sections > input {
+			padding: .5em;
+			font-family: Arial;
+			border: 1.5px solid gray;
+		}
+		.sections > input:focus {
+			outline: none;
+			border-radius: 3px;
+			border: 2px solid blue;
+		}
+		.sections > button {
+			flex: .05;
+			border: 0;
+			color: white;
+			cursor: pointer;
+			padding: .5em 1.5em;
+		}
+		#csub { background: blue; }
+		#cres {
+			background: gray;
+			margin-left: 1.5em;
+		}
+	</style>
+</head>
+<body>
+	<nav class="nav">
+		<a class="link active"> Add new customer </a>
+		<a class="link " href="/list"> View customers </a>
+	</nav>
+	<form id="form" onsubmit="formSubmit(event)">
+		<h2 class="heading"> Customer Details </h2>
+		<ul class="wrapper">
+			<li class="sections">
+				<label for="cname"> Customer name </label>
+				<input type="text" name="cname" id="cname" required>
+			</li>
+			<li class="sections">
+				<label for="cmail"> Customer email </label>
+				<input type="email" name="cmail" id="cmail" required>
+			</li>
+			<li class="sections">
+				<label for="cphno"> Customer phone number </label>
+				<input type="tel" name="cphno" id="cphno" required>
+			</li>
+			<li class="sections">
+				<label for="caddr"> Customer address </label>
+				<input type="text" name="caddr" id="caddr" required>
+			</li>
+			<li class="sections">
+				<button type="submit" id="csub"> Save </button>
+				<button type="reset" id="cres"> Cancel </button>
+			</li>
+		</ul>
+	</form>
+	<script>
+		function formSubmit(event) {
+			event.preventDefault();
+			const cname = _e("cname").value;
+			const cmail = _e("cmail").value;
+			const cphno = _e("cphno").value;
+			const caddr = _e("caddr").value;
+			const data = { cname, cmail, cphno, caddr };
+			const options = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			};
+			fetch('/', options);
+			alert("Customer details added successfully");
+			_e("form").reset();
+		}
+		function _e(id) { return document.getElementById(id); }
+	</script>
+</body>
+</html>

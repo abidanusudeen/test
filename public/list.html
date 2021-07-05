@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Customer List </title>
+	<script src="https://kit.fontawesome.com/af6f00cd8e.js" crossorigin="anonymous"></script>
+	<style>
+		* {
+			font-size: 1em;
+			font-family: serif;
+		}
+		body {
+			margin: 0;
+			background-color: whitesmoke;
+		}
+		a { text-decoration: none; }
+		/*   SWITCHING NAV BAR   */
+		.nav {
+			display: flex;
+			margin-bottom: 2em;
+		}
+		.link {
+			flex: .5;
+			color: blue;
+			padding: .5em;
+			cursor: pointer;
+			font-size: 1.5em;
+			font-weight: 900;
+			text-align: center;
+			background-color: lightgray;
+			box-shadow: inset 0 0 .1em gray;
+		}
+		.active {
+			color: white !important;
+			background-color: blue !important;
+		}
+		/*   LISTING CUSTOMERS   */
+		.rows {
+			display: flex;
+			padding: 0 1em;
+			justify-content: space-between;
+			border-bottom: 1px solid lightgray;
+		}
+		.topr {
+			background-color: lightgray;
+			border-bottom: 3px solid gray;
+		}
+		.rows > div {
+			margin: 2px;
+			padding: .5em;
+		}
+		.toph {
+			font-size: 1.1em;
+			font-weight: 900;
+			font-style: italic;
+		}
+		.cname { flex: .15; }
+		.cmail { flex: .2; }
+		.cphno {
+			flex: .125;
+			text-align: right;
+		}
+		.caddr { flex: .275; }
+		.cdele { flex: .025; }
+		.btn {
+			border: none;
+			font-size: 1.1em;
+			font-weight: 900;
+			background-color: lightgray;
+		}
+	</style>
+</head>
+<body>
+	<nav class="nav">
+		<a class="link" href="./"> Add new customer </a>
+		<a class="link active"> View customers </a>
+	</nav>
+	<form id="form" onsubmit="formSubmit(event)">
+		<div class="rows topr">
+			<div class="toph cname"> Name </div>
+			<div class="toph cmail"> Email </div>
+			<div class="toph cphno"> Phone Number </div>
+			<div class="toph caddr"> Address </div>
+			<div class="toph cdele"> <button type="submit" class="btn"> <i class="fas fa-trash-alt"></i> </button> </div>
+		</div>
+		<div id="list"></div>
+	</form>
+	<script>
+		async function fetching() {
+			const response = await fetch('http://localhost:8080/listdetails');
+			const data = await response.json();
+			displaying(data);
+		}
+		fetching();
+		function formSubmit(event) {
+			event.preventDefault();
+			var cdele = [];
+			var checkboxes = _f("cdele");
+			for(var i = 0; i < checkboxes.length; i++)
+				if(checkboxes[i].checked)
+					cdele.push(checkboxes[i].value);
+			const data = { cdele };
+			const options = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			};
+			fetch('/list', options);
+			alert("Customer details deleted successfully");
+			_e("form").reset();
+			fetching();
+		}
+		function displaying(array) {
+			result = "";
+			array.forEach(function(c) {
+			result +=   `<div class="rows">
+							<div class="cname"> ${c.cname} </div>
+							<div class="cmail"> ${c.cmail} </div>
+							<div class="cphno"> ${c.cphno} </div>
+							<div class="caddr"> ${c.caddr} </div>
+							<div class="cdele"> <input type="checkbox" name="cdele" value=${c.id}> </div>
+						</div>`;
+			});
+			_e("list").innerHTML = result;
+		}
+		function _e(id) { return document.getElementById(id); }
+		function _f(id) { return document.getElementsByName(id); }
+	</script>
+</body>
+</html>
